@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fieldnote. Speak a messy observation, get a clean report.</title>
 <meta name="description" content="Speak or type a messy field observation. Claude turns it into a clean structured report with highlights, flags, and next steps.">
+<link rel="canonical" href="https://cosmik-fieldnote.netlify.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fieldnote. Speak a messy observation, get a clean report.">
+<meta property="og:description" content="Speak or type a messy field observation. Claude turns it into a clean structured report with highlights, flags, and next steps.">
+<meta property="og:url" content="https://cosmik-fieldnote.netlify.app/">
+<meta property="og:image" content="https://cosmik.work/img/cosmikwork_broad_logo.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fieldnote. Speak a messy observation, get a clean report.">
+<meta name="twitter:description" content="Speak or type a messy field observation. Claude turns it into a clean structured report with highlights, flags, and next steps.">
+<meta name="twitter:image" content="https://cosmik.work/img/cosmikwork_broad_logo.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,500&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -85,6 +95,9 @@
   button.primary:disabled{opacity:.5;cursor:not-allowed;}
 
   .form-note{font-family:var(--font-mono);font-size:11px;color:var(--off-dim);margin-top:12px;line-height:1.5;}
+  .char-count{font-family:var(--font-mono);font-size:11px;color:var(--off-dim);text-align:right;margin-top:4px;}
+  .char-count.warn{color:var(--amber);}
+  .char-count.over{color:var(--red);}
   .form-msg{font-family:var(--font-mono);font-size:12px;margin-top:12px;color:var(--red);}
   .form-msg.ok{color:var(--green);}
 
@@ -116,15 +129,24 @@
   }
   footer a{color:var(--violet);text-decoration:none;}
   footer a:hover{color:var(--amber);}
+  .skip-link{
+    position:absolute;left:-9999px;top:0;z-index:100;
+    background:var(--violet);color:#fff;padding:12px 20px;
+    font-family:var(--font-mono);font-size:13px;text-decoration:none;border-radius:0 0 8px 0;
+  }
+  .skip-link:focus{left:0;}
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="topbar" aria-label="Breadcrumb">
   <a class="brand" href="https://cosmik.work"><strong>cosmik</strong>.work</a>
   <a class="backlink" href="https://cosmik.work/shipped.html">&larr; shipped</a>
-</div>
+</nav>
 
+<main id="main">
 <div class="hero">
   <span class="eyebrow">Shipped · 03 · Fieldnote</span>
   <h1>Speak a messy observation, get a <em>clean</em> report.</h1>
@@ -139,7 +161,8 @@
       <span id="micLabel">Speak it</span>
     </button>
   </div>
-  <textarea id="noteInput" aria-label="Your observation" placeholder="e.g. Walked into the grade 6 classroom mid-lesson, most kids engaged with the group activity but the back row was on phones, teacher didn't notice for a while. Good energy overall, worksheets from last week still not handed back..."></textarea>
+  <textarea id="noteInput" aria-label="Your observation" maxlength="4000" placeholder="e.g. Walked into the grade 6 classroom mid-lesson, most kids engaged with the group activity but the back row was on phones, teacher didn't notice for a while. Good energy overall, worksheets from last week still not handed back..."></textarea>
+  <p class="char-count" id="noteInputCount" aria-live="polite">0 / 4000</p>
   <button class="primary" id="generateBtn">Structure it</button>
   <p class="form-note">Claude sorts your note into highlights, flags, and next steps, using only what's actually said. Capped at a daily limit to keep this free to run.</p>
   <p class="form-msg" id="formMsg" aria-live="polite"></p>
@@ -163,6 +186,7 @@
     <ul class="report-list" id="nextStepsList"></ul>
   </div>
 </div>
+</main>
 
 <footer>
   Built by <a href="https://cosmik.work">Soumik Chatterjee</a> · one Netlify Function, no transcription service, no admin backlog
@@ -170,6 +194,13 @@
 
 <script>
 const noteInput = document.getElementById('noteInput');
+const noteInputCount = document.getElementById('noteInputCount');
+function updateNoteInputCount(){
+  const n = noteInput.value.length;
+  noteInputCount.textContent = n + ' / 4000';
+  noteInputCount.className = 'char-count' + (n >= 4000 ? ' over' : n >= 3600 ? ' warn' : '');
+}
+noteInput.addEventListener('input', updateNoteInputCount);
 const micBtn = document.getElementById('micBtn');
 const micLabel = document.getElementById('micLabel');
 const generateBtn = document.getElementById('generateBtn');
@@ -209,6 +240,7 @@ if (SpeechRecognitionAPI) {
       }
     }
     noteInput.value = (baseText + finalText + interimText).trim();
+    updateNoteInputCount();
   };
 
   recognizer.onerror = () => {
