@@ -4,6 +4,3 @@ node_modules/
 
 # Local Claude Code permissions (may embed secrets in allow-listed commands, never public)
 .claude/
-
-# Local Netlify folder
-.netlify
