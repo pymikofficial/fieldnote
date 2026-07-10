@@ -157,7 +157,7 @@
 <div class="form-section">
   <div class="form-label">
     <span>Your observation</span>
-    <button class="mic-btn" id="micBtn" type="button">
+    <button class="mic-btn" id="micBtn" type="button" aria-pressed="false">
       <span class="mic-dot"></span>
       <span id="micLabel">Speak it</span>
     </button>
@@ -262,6 +262,7 @@ if (SpeechRecognitionAPI) {
     baseText = noteInput.value ? noteInput.value + ' ' : '';
     isRecording = true;
     micBtn.classList.add('recording');
+    micBtn.setAttribute('aria-pressed', 'true');
     micLabel.textContent = 'Listening… tap to stop';
     formMsg.textContent = '';
     try { recognizer.start(); } catch (e) {}
@@ -270,6 +271,7 @@ if (SpeechRecognitionAPI) {
   function stopRecording() {
     isRecording = false;
     micBtn.classList.remove('recording');
+    micBtn.setAttribute('aria-pressed', 'false');
     micLabel.textContent = 'Speak it';
     try { recognizer.stop(); } catch (e) {}
   }
