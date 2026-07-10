@@ -139,10 +139,10 @@
       <span id="micLabel">Speak it</span>
     </button>
   </div>
-  <textarea id="noteInput" placeholder="e.g. Walked into the grade 6 classroom mid-lesson, most kids engaged with the group activity but the back row was on phones, teacher didn't notice for a while. Good energy overall, worksheets from last week still not handed back..."></textarea>
+  <textarea id="noteInput" aria-label="Your observation" placeholder="e.g. Walked into the grade 6 classroom mid-lesson, most kids engaged with the group activity but the back row was on phones, teacher didn't notice for a while. Good energy overall, worksheets from last week still not handed back..."></textarea>
   <button class="primary" id="generateBtn">Structure it</button>
   <p class="form-note">Claude sorts your note into highlights, flags, and next steps, using only what's actually said. Capped at a daily limit to keep this free to run.</p>
-  <p class="form-msg" id="formMsg"></p>
+  <p class="form-msg" id="formMsg" aria-live="polite"></p>
 </div>
 
 <div class="report" id="reportSection">
