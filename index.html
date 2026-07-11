@@ -102,6 +102,7 @@
   .form-msg{font-family:var(--font-mono);font-size:12px;margin-top:12px;color:var(--red);}
   .form-msg.ok{color:var(--green);}
 
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
   .report{margin:0 32px 60px;max-width:820px;display:none;}
   @media(max-width:640px){.report{margin:0 16px 40px;}}
   .report-summary{
@@ -170,6 +171,7 @@
 </div>
 
 <div class="report" id="reportSection">
+  <h2 class="visually-hidden">Report</h2>
   <div class="report-summary" id="reportSummary"></div>
 
   <div class="report-col highlights">
